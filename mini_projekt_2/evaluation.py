@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-
 def calc_accuracy(pred_targets, targets):
     accuracies = []
     for i in range(3):
