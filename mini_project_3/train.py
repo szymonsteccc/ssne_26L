@@ -48,8 +48,8 @@ def train_model(net, train_loader, val_loader, criterion, optimizer, eval_func, 
         else:
             rng.set_postfix(loss=f"{epoch_loss:.3f}")
 
-        train_eval_hist.append(eval_func(net, train_loader, device))
-        val_eval_hist.append(eval_func(net, val_loader, device))
+    train_eval_hist.append(eval_func(net, train_loader, device)) # Tutaj było 1 tab do przodu, czyli co epokę. TEraz szybeciej
+    val_eval_hist.append(eval_func(net, val_loader, device))
 
     if not verbose:
         print('Finished Training')
