@@ -25,7 +25,7 @@ class Net(nn.Module):
         self.conv2 = nn.Conv2d(n_channels, 16, kernel_size=kernel_sizes[2])
         self.pool2 = nn.MaxPool2d(kernel_size=kernel_sizes[2], stride=2)
         # !!!
-        self.fc1 = nn.LazyLinear(hidden_size)
+        self.fc1 = nn.Linear(3136, hidden_size)
         # self.fc1 = nn.Linear(16 * 5 * 5, 120)
         self.fc2 = nn.Linear(hidden_size, hidden_size)
         self.fc3 = nn.Linear(hidden_size, num_classes)
@@ -57,7 +57,7 @@ class LongNet(nn.Module):
 			[nn.Conv2d(in_channels=n_channels * 2, out_channels=n_channels, kernel_size=5, stride=1, padding=2) for _ in range(self.n_convs)]
 		)
 		self.bns = nn.ModuleList([nn.BatchNorm2d(n_channels) for _ in range(self.n_convs)])
-	
+
 		self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
 		self.fc1 = nn.LazyLinear(hidden_size[0])
@@ -78,4 +78,3 @@ class LongNet(nn.Module):
 		x = F.relu(self.fc2(x))
 		x = self.fc3(x)
 		return x
-	
