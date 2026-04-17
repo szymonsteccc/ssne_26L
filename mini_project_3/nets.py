@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 
 class Net(nn.Module):
-    def __init__(self, num_classes=10):
+    def __init__(self, num_classes=50):
         super().__init__()
 
         self.features = nn.Sequential(
@@ -50,7 +50,7 @@ class Net(nn.Module):
         x = self.features(x)
         x = self.gap(x)
         x = self.classifier(x)
-        return x  
+        return x
 
 # skopiowane z lab6:
 # trzeba zamineć kernel_size na kernel_sizes i dodać hidden_size do argumentów konstruktora, a potem przekazać je do warstwy fc1, która musi być LazyLinear, bo nie znamy rozmiaru wejścia (zależy on od rozmiaru obrazu i kernel_sizes)
