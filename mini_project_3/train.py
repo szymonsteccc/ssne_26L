@@ -27,8 +27,9 @@ def train_model(net, train_loader, val_loader, criterion, optimizer, eval_func, 
     total = 0
     correct = 0
 
+    # Przetrenowanie
     best_val_acc = 0
-    max_plateau = 4
+    max_plateau = 5
     plateau_counter = 0
 
     for epoch in rng:
@@ -84,7 +85,6 @@ def train_model(net, train_loader, val_loader, criterion, optimizer, eval_func, 
         if plateau_counter >= max_plateau:
             print("Early stopping: validation accuracy stopped improving")
             break
-    # train_eval_hist.append(eval_func(net, train_loader, device)) # Tutaj było 1 tab do przodu, czyli co epokę. TEraz szybeciej
 
     if not verbose:
         print('Finished Training')

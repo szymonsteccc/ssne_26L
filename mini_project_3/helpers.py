@@ -63,4 +63,4 @@ def evaluate_from_csv(csv_path, n_classes=50, match_ratio=0.5):
 
     return acc, preds, targets
 
-evaluate_from_csv("./mini_project_3/pred.csv")
+evaluate_from_csv("./mini_project_3/ZapisaneWyniki/pred_66%.csv")
