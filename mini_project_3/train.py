@@ -28,7 +28,7 @@ def train_model(net, train_loader, val_loader, criterion, optimizer, eval_func, 
     correct = 0
 
     best_val_acc = 0
-    max_plateau = 5
+    max_plateau = 4
     plateau_counter = 0
 
     for epoch in rng:
@@ -70,7 +70,7 @@ def train_model(net, train_loader, val_loader, criterion, optimizer, eval_func, 
                 train_acc=f"{train_acc:.3f}",
                 val_acc=f"{val_eval_hist[-1]:.3f}"
             )
-            if (epoch+1) % 5 == 0:
+            if (epoch+1) % 1 == 0:
               plot_training_chart(loss_hist, train_eval_hist, val_eval_hist)
 
         val_acc = val_eval_hist[-1]
