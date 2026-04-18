@@ -33,15 +33,7 @@ def split_dataset(dataset, split_ratio=0.8):
     size_1 = int(split_ratio * total_size)
     size_2 = total_size - size_1
     dataset_1, dataset_2 = random_split(dataset, [size_1, size_2])
-    # dataset_1 = split_ratio * dataset
     return dataset_1, dataset_2
-
-# def split_train_val_dataset(dataset, train_ratio=0.8):
-#     total_size = len(dataset)
-#     train_size = int(train_ratio * total_size)
-#     val_size = total_size - train_size
-#     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
-#     return train_dataset, val_dataset
 
 def train_test_split(X, y, test_size=0.2):
     total_size = len(X)
