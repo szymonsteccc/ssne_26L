@@ -16,6 +16,7 @@ from tqdm import tqdm
 
 
 class Net(nn.Module):
+    ## Tu wcześniej były parametryzowane rozmiary kerneli itp, ale ostatecznie taka była najlepsza
     def __init__(self, num_classes=50):
         super().__init__()
 
