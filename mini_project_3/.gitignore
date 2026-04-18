@@ -2,3 +2,4 @@ test.zip
 train.zip
 test/
 train/
+__pycache__/
