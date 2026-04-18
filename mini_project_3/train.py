@@ -24,9 +24,18 @@ def train_model(net, train_loader, val_loader, criterion, optimizer, eval_func, 
 
     rng = tqdm(range(num_epochs)) if verbose else range(num_epochs)
 
+    total = 0
+    correct = 0
+
+    best_val_acc = 0
+    max_plateau = 5
+    plateau_counter = 0
+
     for epoch in rng:
         net.train()
         running_loss = 0.0
+        total = 0
+        correct = 0
 
         for data in train_loader:
             inputs, labels = data
@@ -38,18 +47,44 @@ def train_model(net, train_loader, val_loader, criterion, optimizer, eval_func, 
             loss.backward()
             optimizer.step()
 
+            with torch.no_grad():
+              preds = outputs.argmax(dim=1)
+
+            correct += (preds == labels).sum().item()
+            total += labels.size(0)
+
             running_loss += loss.item()
 
-        epoch_loss = running_loss / 2000
+        epoch_loss = running_loss / len(train_loader)
         loss_hist.append(epoch_loss)
+
+        train_acc = correct / total
+        train_eval_hist.append(train_acc)
+        val_eval_hist.append(eval_func(net, val_loader, device))
 
         if not verbose:
             print('[%d/%d] loss: %.3f' % (epoch + 1, num_epochs, epoch_loss))
         else:
-            rng.set_postfix(loss=f"{epoch_loss:.3f}")
+            rng.set_postfix(
+                loss=f"{epoch_loss:.3f}",
+                train_acc=f"{train_acc:.3f}",
+                val_acc=f"{val_eval_hist[-1]:.3f}"
+            )
+            if (epoch+1) % 5 == 0:
+              plot_training_chart(loss_hist, train_eval_hist, val_eval_hist)
 
-    train_eval_hist.append(eval_func(net, train_loader, device)) # Tutaj było 1 tab do przodu, czyli co epokę. TEraz szybeciej
-    val_eval_hist.append(eval_func(net, val_loader, device))
+        val_acc = val_eval_hist[-1]
+
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            plateau_counter = 0
+        else:
+            plateau_counter += 1
+
+        if plateau_counter >= max_plateau:
+            print("Early stopping: validation accuracy stopped improving")
+            break
+    # train_eval_hist.append(eval_func(net, train_loader, device)) # Tutaj było 1 tab do przodu, czyli co epokę. TEraz szybeciej
 
     if not verbose:
         print('Finished Training')
