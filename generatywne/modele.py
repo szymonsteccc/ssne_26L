@@ -38,14 +38,14 @@ class BasicUNet(nn.Module):
         for i, layer in enumerate(self.down_layers):
             x = self.act(layer(x))
             if i < 2: # Dla wszystki warstw "down" poza ostatnim
-              h.append(x) # Zapisujemy "skip-connetions"
-              x = self.downscale(x) # Zmniejszamy wymiarowość, i propagujemy do kolejnej warstwy
+                h.append(x) # Zapisujemy "skip-connetions"
+                x = self.downscale(x) # Zmniejszamy wymiarowość, i propagujemy do kolejnej warstwy
         t = t.repeat(1,x.size(2),x.size(3),1).permute(3,0,1,2)
         x = torch.cat([x,t],dim=1)
         for i, layer in enumerate(self.up_layers):
             if i > 0: # Dla wszystkich warstw up poza pierwszą
-              x = self.upscale(x) # Upscale
-              x += h.pop() # Dodajemy zapisane skip-connection
+                x = self.upscale(x) # Upscale
+                x += h.pop() # Dodajemy zapisane skip-connection
             x = self.act(layer(x))
 
         return x
