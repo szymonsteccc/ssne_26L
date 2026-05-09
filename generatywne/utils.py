@@ -25,6 +25,7 @@ def train(
     optimizer: Optimizer,
     loader: DataLoader,
     losses_list: list,
+    onehot : nn.functional.one_hot,
     criterion: callable = vae_loss,
     overfit_on_single_batch: bool = False,
     device: str = "cuda",
@@ -33,10 +34,11 @@ def train(
 ):
     for epoch in range(1, epochs + 1):
         losses_epoch = []
-        for x, _ in loader:
+        for x, y in loader:
+            # print(y)
             x = x.to(device)
             optimizer.zero_grad()
-            x_out, mean_, log_std_ = model(x)
+            x_out, mean_, log_std_ = model(x, onehot[y].to(device))
             loss = criterion(x_out, x, mean_, log_std_)
             if not torch.isnan(loss):
                 loss.backward()
@@ -51,11 +53,18 @@ def train(
 
 def generate_random_images(
     model: VAE,
+    onehot : nn.functional.one_hot,
+    classes : list,
     num_imgs: int = 1000,
     single_img_shape: tuple = (3, 32, 32),
     device: str = "cuda",
 ) -> torch.tensor:
-    imgs = model.decoder(torch.randn([num_imgs, model.latent_dim]).to(device))
+
+    z = torch.randn([num_imgs, model.latent_dim]).to(device)
+    class_emb = onehot[classes].float().to(device)
+    dec_input = torch.cat([z, class_emb], dim=1)
+    
+    imgs = model.decoder(dec_input.to(device))
     assert imgs.shape == tuple((num_imgs, *single_img_shape))
     return imgs
 

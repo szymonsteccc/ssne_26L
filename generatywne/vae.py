@@ -1,3 +1,4 @@
+from numpy import concat
 import torch
 import torch.nn as nn
 
@@ -38,20 +39,23 @@ class Decoder(nn.Module):
 
 class VAE(nn.Module):
     def __init__(
-        self, input_dim: int, hidden_dim: int, latent_dim: int, output_dim: int
+        self, input_dim: int, hidden_dim: int, latent_dim: int, output_dim: int, condition_size : int
     ) -> None:
         super().__init__()
         self.latent_dim = latent_dim
-        self.encoder = Encoder(input_dim, hidden_dim, latent_dim)
-        self.decoder = Decoder(latent_dim, hidden_dim, output_dim)
+        self.encoder = Encoder(input_dim + condition_size, hidden_dim, latent_dim)
+        self.decoder = Decoder(latent_dim + condition_size, hidden_dim, output_dim)
 
     def reparametrization_trick(self, mean_, log_std_):
         eps = torch.normal(torch.zeros_like(mean_), torch.ones_like(log_std_))
         z = mean_ + eps * torch.exp(0.5 * log_std_)
         return z
 
-    def forward(self, x):
-        mean_, log_std_ = self.encoder(x)
+    def forward(self, x, class_emb):
+        # print(x.shape)
+        # print(class_emb.shape)
+        x = x.view(x.size(0), -1)
+        mean_, log_std_ = self.encoder(torch.cat([x, class_emb], dim=1))
         z = self.reparametrization_trick(mean_, log_std_)
-        x = self.decoder(z)
+        x = self.decoder(torch.cat([z, class_emb], dim=1))
         return x, mean_, log_std_
