@@ -52,8 +52,6 @@ class VAE(nn.Module):
         return z
 
     def forward(self, x, class_emb):
-        # print(x.shape)
-        # print(class_emb.shape)
         x = x.view(x.size(0), -1)
         mean_, log_std_ = self.encoder(torch.cat([x, class_emb], dim=1))
         z = self.reparametrization_trick(mean_, log_std_)
