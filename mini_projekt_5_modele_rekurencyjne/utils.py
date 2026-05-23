@@ -177,3 +177,20 @@ def pad_collate(batch):
 
     return padded_sequences, lengths, labels
 
+
+def test_pad_collate(batch):
+
+    lengths = torch.tensor([len(seq) for seq in batch])
+
+    sequences = [
+        torch.tensor(seq, dtype=torch.long) + 1
+        for seq in batch
+    ]
+
+    padded_sequences = pad_sequence(
+        sequences,
+        batch_first=True,
+        padding_value=0
+    )
+
+    return padded_sequences, lengths
